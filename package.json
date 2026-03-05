@@ -1,0 +1,35 @@
+{
+  "name": "koishi-plugin-w-assets-core",
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "dist"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "chatbot",
+    "koishi",
+    "plugin"
+  ],
+  "peerDependencies": {
+    "koishi": "^4.18.10"
+  },
+  "dependencies": {
+    "@koishijs/assets": "^1.1.2",
+    "file-type": "^16.5.4",
+    "fs-extra": "^11.3.3",
+    "mime-types": "^3.0.2",
+    "p-limit": "^7.3.0"
+  },
+  "scripts": {
+    "build": "yarn workspace willbot build w-assets-core",
+    "bump": "yarn workspace willbot bump w-assets-core",
+    "pub": "yarn workspace willbot pub w-assets-core"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11",
+    "@types/mime-types": "^3"
+  }
+}
