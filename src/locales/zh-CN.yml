@@ -1,0 +1,11 @@
+commands:
+  assets:
+    description: "管理资源"
+
+  assets.stats:
+    description: "显示资源统计信息"
+    messages:
+      summary: |
+        资源统计
+        - 资源数量: {count}
+        - 总大小: {size}

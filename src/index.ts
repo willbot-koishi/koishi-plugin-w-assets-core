@@ -1,11 +1,18 @@
 import { Readable } from 'node:stream'
+import { Blob, Buffer } from 'node:buffer'
 
-import { Context } from 'koishi'
+import { Argv, Awaitable, Channel, Command, Context, Fragment, Session, User } from 'koishi'
 import Assets from '@koishijs/assets'
+
+import { filesize } from 'filesize'
 
 declare module 'koishi' {
   interface Context {
     assetsPro: AssetsPro
+  }
+
+  interface Command<U extends User.Field = never, G extends Channel.Field = never, A extends any[] = any[], O extends {} = {}> {
+    action(callback: (argv: Required<Argv<U, G, A, O>>, ...args: A) => Awaitable<void | Fragment>, prepend?: boolean): this
   }
 }
 
@@ -29,7 +36,7 @@ abstract class AssetsPro<T extends AssetsPro.Config = AssetsPro.Config> extends 
   }
 
   abstract uploadFromUrl(url: string, info: AssetCreateInfo): Promise<AssetUsageInfo>
-  abstract uploadFromFile(file: Buffer | Readable | string, info: AssetCreateInfo): Promise<AssetUsageInfo>
+  abstract uploadFromFile(file: globalThis.Blob | Blob | Buffer | Readable | string, info: AssetCreateInfo): Promise<AssetUsageInfo>
   abstract delete(id: string): Promise<boolean>
   abstract gc(options: GcOptions): Promise<GcResult>
 
@@ -39,6 +46,21 @@ abstract class AssetsPro<T extends AssetsPro.Config = AssetsPro.Config> extends 
     super(ctx, config)
 
     ctx.set('assetsPro', this)
+
+    ctx.i18n.define('zh-CN', require('./locales/zh-CN.yml'))
+    ctx.i18n.define('en-US', require('./locales/en-US.yml'))
+
+    ctx.command('assets')
+
+    ctx.command('assets.stats')
+      .action(async ({ session }) => {
+        const stats = await this.stats()
+        const assetSizeHuman = filesize(stats.assetSize)
+        return session.text('.summary', {
+          count: stats.assetCount,
+          size: assetSizeHuman
+        })
+      })
   }
 }
 
@@ -47,6 +69,8 @@ namespace AssetsPro {
 
   export interface Stats extends Assets.Stats {
     id: 1
+    assetCount: number
+    assetSize: number
   }
 }
 

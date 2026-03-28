@@ -1,0 +1,11 @@
+commands:
+  assets:
+    description: "Assets management"
+
+  assets.stats:
+    description: "Show assets statistics"
+    messages:
+      summary: |
+        Assets statistics
+        - Assets count: {count}
+        - Total size: {size}
